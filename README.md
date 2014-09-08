@@ -61,6 +61,7 @@ angular.module('MyApp', ['angular-carousel']);
  - `rn-carousel-auto-slide` integer value will make the slider automatically change the visible slide after given seconds
  - `rn-carousel-pause-on-hover="true"` prevent auto-slide on hover
  - `rn-carousel-prevent-animation="true"` if you dont want animations
+ - `rn-carousel-width` number of slides to display at once, defaults to 1 slide.
 
 ## Todo :
  - see the [TODO file](./TODO)

@@ -141,7 +141,32 @@
                 <iframe width="100%" height="80%" src="//www.youtube.com/embed/OQSNhk5ICTI" frameborder="0" allowfullscreen></iframe>
             </li>
         </ul>
+
+        <h3>Multiple slide display</h3>
+        <div class="details">
+            By adding <strong>rn-carousel-width</strong> with an integer value will make the slider show <strong>n</strong> slides at a time
+        </div>
+        <ul rn-carousel rn-carousel-indicator rn-carousel-control rn-carousel-width="2" class="my-slider standard two-wide ng-cloak">
+            <li ng-style="{'background-color': colors[0]}">
+                This is a standard template
+                <div class="big">slide #1</div>
+            </li>
+            <li ng-style="{'background-color': colors[10]}">
+                Here's sophie : <br>
+                <img src="./demo/img/sophie.jpeg">
+            </li>
+            <li ng-style="{'background-color': colors[30]}">
+                A friend of mine : <br>
+                <img src="./demo/img/grumpy.jpg" height="120">
+            </li>
+            <li ng-style="{'background-color': colors[40]}">
+                And to finish :
+                <iframe width="100%" height="80%" src="//www.youtube.com/embed/OQSNhk5ICTI" frameborder="0" allowfullscreen></iframe>
+            </li>
+        </ul>
+
         <br/><br/>
+
         <h3>Other demos</h3>
         <ul>
           <li><a href="demo/flickr-full" target="_blank">Flickr browser</a></li>

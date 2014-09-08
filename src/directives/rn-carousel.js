@@ -65,6 +65,7 @@
                     carouselId++;
 
                     var containerWidth,
+                        slideWidth,
                         transformProperty,
                         pressed,
                         startX,
@@ -75,7 +76,8 @@
                         swipeMoved = false,
                         animOnIndexChange = true,
                         // javascript based animation easing
-                        timestamp;
+                        timestamp,
+                        numberOfSlides = parseInt(iAttributes.rnCarouselWidth, 10) || 1;
 
                     // add a wrapper div that will hide the overflow
                     var carousel = iElement.wrap("<div id='carousel-" + carouselId +"' class='rn-carousel-container'></div>"),
@@ -159,7 +161,7 @@
                                 slidesCount = Object.keys(newValue).length;
                             }
                             updateIndicatorArray();
-                            if (!containerWidth) updateContainerWidth();
+                            if (!containerWidth || !slideWidth) updateContainerWidth();
                             goToSlide(scope.carouselIndex);
                         });
                     } else {
@@ -180,8 +182,10 @@
                         var slides = carousel.children();
                         if (slides.length === 0) {
                             containerWidth = carousel[0].getBoundingClientRect().width;
+                            slideWidth = containerWidth / numberOfSlides;
                         } else {
-                            containerWidth = slides[0].getBoundingClientRect().width;
+                            slideWidth = slides[0].getBoundingClientRect().width;
+                            containerWidth = slideWidth * numberOfSlides;
                         }
                         // console.log('getCarouselWidth', containerWidth);
                         return containerWidth;
@@ -199,12 +203,12 @@
                     function scroll(x) {
                         // use CSS 3D transform to move the carousel
                         if (isNaN(x)) {
-                            x = scope.carouselIndex * containerWidth;
+                            x = scope.carouselIndex * slideWidth;
                         }
 
                         offset = x;
                         var move = -Math.round(offset);
-                        move += (scope.carouselBufferIndex * containerWidth);
+                        move += (scope.carouselBufferIndex * slideWidth);
 
                         if(!is3dAvailable) {
                             carousel[0].style[transformProperty] = 'translate(' + move + 'px, 0)';
@@ -227,7 +231,7 @@
                                 this will work on IE9 */
                                 requestAnimationFrame(autoScroll);
                             } else {
-                                goToSlide(destination / containerWidth);
+                                goToSlide(destination / slideWidth);
                             }
                         }
                     }
@@ -262,7 +266,7 @@
                         if (animate) {
                             // simulate a swipe so we have the standard animation
                             // used when external binding index is updated or touch canceed
-                            offset = (i * containerWidth);
+                            offset = (i * slideWidth);
                             swipeEnd(null, null, true);
                             return;
                         }
@@ -282,7 +286,7 @@
 
                     function getAbsMoveTreshold() {
                         // return min pixels required to move a slide
-                        return moveTreshold * containerWidth;
+                        return moveTreshold * slideWidth;
                     }
 
                     function documentMouseUpEvent(event) {
@@ -299,8 +303,8 @@
                         var position = x;
                         if (scope.carouselIndex===0) {
                             position = Math.max(-getAbsMoveTreshold(), position);
-                        } else if (scope.carouselIndex===slidesCount-1) {
-                            position = Math.min(((slidesCount-1)*containerWidth + getAbsMoveTreshold()), position);
+                        } else if (scope.carouselIndex===slidesCount-numberOfSlides) {
+                            position = Math.min(((slidesCount-numberOfSlides)*slideWidth + getAbsMoveTreshold()), position);
                         }
                         return position;
                     }
@@ -352,9 +356,9 @@
                         destination = offset;
 
                         var minMove = getAbsMoveTreshold(),
-                            currentOffset = (scope.carouselIndex * containerWidth),
+                            currentOffset = (scope.carouselIndex * slideWidth),
                             absMove = currentOffset - destination,
-                            slidesMove = -Math[absMove>=0?'ceil':'floor'](absMove / containerWidth),
+                            slidesMove = -Math[absMove>=0?'ceil':'floor'](absMove / slideWidth),
                             shouldMove = Math.abs(absMove) > minMove;
 
                         if ((slidesMove + scope.carouselIndex) >= slidesCount ) {
@@ -365,7 +369,7 @@
                         }
                         var moveOffset = shouldMove?slidesMove:0;
 
-                        destination = (moveOffset + scope.carouselIndex) * containerWidth;
+                        destination = (moveOffset + scope.carouselIndex) * slideWidth;
                         amplitude = destination - offset;
                         timestamp = Date.now();
                         if (forceAnimation) {
