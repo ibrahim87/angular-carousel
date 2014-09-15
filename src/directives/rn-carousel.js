@@ -76,8 +76,7 @@
                         swipeMoved = false,
                         animOnIndexChange = true,
                         // javascript based animation easing
-                        timestamp,
-                        numberOfSlides = parseInt(iAttributes.rnCarouselWidth, 10) || 1;
+                        timestamp;
 
                     // add a wrapper div that will hide the overflow
                     var carousel = iElement.wrap("<div id='carousel-" + carouselId +"' class='rn-carousel-container'></div>"),
@@ -177,9 +176,15 @@
                         scope.carouselIndicatorArray = items;
                     }
 
+                    function getNumberOfSlides() {
+                        return parseInt(iAttributes.rnCarouselWidth, 10) || 1;
+                    }
+
                     function getCarouselWidth() {
                        // container.css('width', 'auto');
-                        var slides = carousel.children();
+                        var slides = carousel.children(),
+                            numberOfSlides = getNumberOfSlides();
+
                         if (slides.length === 0) {
                             containerWidth = carousel[0].getBoundingClientRect().width;
                             slideWidth = containerWidth / numberOfSlides;
@@ -300,7 +305,9 @@
 
                     function capPosition(x) {
                         // limit position if start or end of slides
-                        var position = x;
+                        var position = x,
+                            numberOfSlides = getNumberOfSlides();
+
                         if (scope.carouselIndex===0) {
                             position = Math.max(-getAbsMoveTreshold(), position);
                         } else if (scope.carouselIndex===slidesCount-numberOfSlides) {
@@ -448,6 +455,11 @@
                     var winEl = angular.element($window);
                     winEl.bind('orientationchange', onOrientationChange);
                     winEl.bind('resize', onOrientationChange);
+
+                    // handle carousel width change
+                    scope.$watch(function () {
+                      return iAttributes.rnCarouselWidth;
+                    }, onOrientationChange);
 
                     scope.$on('$destroy', function() {
                         $document.unbind('mouseup', documentMouseUpEvent);
