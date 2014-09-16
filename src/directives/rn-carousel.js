@@ -177,7 +177,8 @@
                     }
 
                     function getNumberOfSlides() {
-                        return parseInt(iAttributes.rnCarouselWidth, 10) || 1;
+                        var width = scope.$eval(iAttributes.rnCarouselWidth);
+                        return parseInt(width, 10) || 1;
                     }
 
                     function getCarouselWidth() {
