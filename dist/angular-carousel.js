@@ -1,6 +1,6 @@
 /**
  * Angular Carousel - Mobile friendly touch carousel for AngularJS
- * @version v0.2.5 - 2014-09-15
+ * @version v0.2.5 - 2015-01-30
  * @link http://revolunet.github.com/angular-carousel
  * @author Julien Bouquillon <julien@revolunet.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -294,14 +294,16 @@ angular.module('angular-carousel').run(['$templateCache', function($templateCach
                     }
 
                     function updateIndicatorArray() {
+                        var hidden  = (getCarouselWidth() / slideWidth) - 1;
                         // generate an array to be used by the indicators
                         var items = [];
-                        for (var i = 0; i < slidesCount; i++) items[i] = i;
+                        for (var i = 0; i < slidesCount - hidden; i++) items[i] = i;
                         scope.carouselIndicatorArray = items;
                     }
 
                     function getNumberOfSlides() {
-                        return parseInt(iAttributes.rnCarouselWidth, 10) || 1;
+                        var width = scope.$eval(iAttributes.rnCarouselWidth);
+                        return parseInt(width, 10) || 1;
                     }
 
                     function getCarouselWidth() {
@@ -327,6 +329,7 @@ angular.module('angular-carousel').run(['$templateCache', function($templateCach
                         if (width) {
                             container.css('width', width + 'px');
                         }
+                        updateIndicatorArray();
                     }
 
                     function scroll(x) {
