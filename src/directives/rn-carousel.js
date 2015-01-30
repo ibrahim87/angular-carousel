@@ -170,9 +170,10 @@
                     }
 
                     function updateIndicatorArray() {
+                        var hidden  = (getCarouselWidth() / slideWidth) - 1;
                         // generate an array to be used by the indicators
                         var items = [];
-                        for (var i = 0; i < slidesCount; i++) items[i] = i;
+                        for (var i = 0; i < slidesCount - hidden; i++) items[i] = i;
                         scope.carouselIndicatorArray = items;
                     }
 
@@ -204,6 +205,7 @@
                         if (width) {
                             container.css('width', width + 'px');
                         }
+                        updateIndicatorArray();
                     }
 
                     function scroll(x) {
