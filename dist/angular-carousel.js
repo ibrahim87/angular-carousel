@@ -1,6 +1,6 @@
 /**
  * Angular Carousel - Mobile friendly touch carousel for AngularJS
- * @version v0.2.5 - 2015-01-30
+ * @version v0.2.5 - 2015-02-03
  * @link http://revolunet.github.com/angular-carousel
  * @author Julien Bouquillon <julien@revolunet.com>
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -78,14 +78,19 @@ angular.module('angular-carousel')
     replace: true,
     scope: {
       items: '=',
-      index: '='
+      index: '=',
+      increment: '&inc'
     },
     link: function(scope, element, attrs) {
       scope.prev = function() {
-        if (scope.index > 0) scope.index--;
+        if (scope.index > 0){
+          scope.index = Math.max(0, scope.index - scope.increment());
+        }
       };
       scope.next = function() {
-        if (scope.index < scope.items.length-1) scope.index++;
+        if (scope.index < scope.items.length-1) {
+          scope.index = Math.min(scope.items.length-1, scope.index + scope.increment());
+        }
       };
     },
     templateUrl: 'carousel-controls.html'
@@ -235,13 +240,20 @@ angular.module('angular-carousel').run(['$templateCache', function($templateCach
 
                     // enable carousel controls
                     if (angular.isDefined(iAttributes.rnCarouselControl)) {
-                        var controls = $compile("<div id='carousel-" + carouselId +"-controls' index='indicatorIndex' items='carouselIndicatorArray' rn-carousel-controls class='rn-carousel-controls'></div>")(scope);
+                        var controls = $compile("<div id='carousel-" + carouselId +"-controls' index='indicatorIndex' items='carouselIndicatorArray' inc='slidesVisible()' rn-carousel-controls class='rn-carousel-controls'></div>")(scope);
                         container.append(controls);
                     }
 
                     scope.carouselBufferIndex = 0;
                     scope.carouselBufferSize = 5;
                     scope.carouselIndex = 0;
+
+                    // not sure why this has to be duplicated like this,
+                    // function is used in here and also in rn-controls
+                    function slidesVisible() {
+                        return (getCarouselWidth() / slideWidth);
+                    }
+                    scope.slidesVisible = slidesVisible;
 
                     // handle index databinding
                     if (iAttributes.rnCarouselIndex) {
@@ -294,7 +306,7 @@ angular.module('angular-carousel').run(['$templateCache', function($templateCach
                     }
 
                     function updateIndicatorArray() {
-                        var hidden  = (getCarouselWidth() / slideWidth) - 1;
+                        var hidden = slidesVisible() - 1;
                         // generate an array to be used by the indicators
                         var items = [];
                         for (var i = 0; i < slidesCount - hidden; i++) items[i] = i;

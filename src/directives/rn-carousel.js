@@ -111,13 +111,20 @@
 
                     // enable carousel controls
                     if (angular.isDefined(iAttributes.rnCarouselControl)) {
-                        var controls = $compile("<div id='carousel-" + carouselId +"-controls' index='indicatorIndex' items='carouselIndicatorArray' rn-carousel-controls class='rn-carousel-controls'></div>")(scope);
+                        var controls = $compile("<div id='carousel-" + carouselId +"-controls' index='indicatorIndex' items='carouselIndicatorArray' inc='slidesVisible()' rn-carousel-controls class='rn-carousel-controls'></div>")(scope);
                         container.append(controls);
                     }
 
                     scope.carouselBufferIndex = 0;
                     scope.carouselBufferSize = 5;
                     scope.carouselIndex = 0;
+
+                    // not sure why this has to be duplicated like this,
+                    // function is used in here and also in rn-controls
+                    function slidesVisible() {
+                        return (getCarouselWidth() / slideWidth);
+                    }
+                    scope.slidesVisible = slidesVisible;
 
                     // handle index databinding
                     if (iAttributes.rnCarouselIndex) {
@@ -170,7 +177,7 @@
                     }
 
                     function updateIndicatorArray() {
-                        var hidden  = (getCarouselWidth() / slideWidth) - 1;
+                        var hidden = slidesVisible() - 1;
                         // generate an array to be used by the indicators
                         var items = [];
                         for (var i = 0; i < slidesCount - hidden; i++) items[i] = i;

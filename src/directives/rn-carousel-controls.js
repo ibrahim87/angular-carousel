@@ -6,14 +6,19 @@ angular.module('angular-carousel')
     replace: true,
     scope: {
       items: '=',
-      index: '='
+      index: '=',
+      increment: '&inc'
     },
     link: function(scope, element, attrs) {
       scope.prev = function() {
-        if (scope.index > 0) scope.index--;
+        if (scope.index > 0){
+          scope.index = Math.max(0, scope.index - scope.increment());
+        }
       };
       scope.next = function() {
-        if (scope.index < scope.items.length-1) scope.index++;
+        if (scope.index < scope.items.length-1) {
+          scope.index = Math.min(scope.items.length-1, scope.index + scope.increment());
+        }
       };
     },
     templateUrl: 'carousel-controls.html'
